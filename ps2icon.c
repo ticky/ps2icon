@@ -132,9 +132,11 @@ void *InitTexture(int iMode, unsigned char *iData)
 	u_int32_t	*lTexturePtr, *lRGBA, *bajs;
 	AnimHdr		*lHdr;
 	AnimFrame	*lFrame;
+	unsigned char   *lFrameTemp;
 
 	lHdr = (AnimHdr *) iData;
-	(unsigned char *) lFrame = (unsigned char *) lHdr + sizeof(AnimHdr);
+	lFrameTemp = (unsigned char *) lHdr + sizeof(AnimHdr);
+	lFrame = (AnimFrame *)lFrameTemp;
 
 	lTexturePtr = (u_int32_t *) malloc(128 * 128 * 4);
 
@@ -142,7 +144,9 @@ void *InitTexture(int iMode, unsigned char *iData)
 	{
 		lSize = (BIG_ENDIAN32(lFrame->af_frameKeys) - 1) * 2;
 		lFrame++;
-		(unsigned char *) lFrame += lSize;
+		lFrameTemp = (unsigned char *) lFrame;
+		lFrameTemp += lSize;
+		lFrame = (AnimFrame *) lFrameTemp;
 	}
 
 	iData = (unsigned char *) lFrame;
